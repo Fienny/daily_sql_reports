@@ -6,7 +6,10 @@ today = pd.Timestamp.today().normalize()
 
 BASE_PATH = r"C:\Users\a.sattorov\OneDrive - Marnell Group Limited\ежедневный мониторинг"
 
-JOBS = {
+# ===========================
+# SQL SERVER JOBS (Microsoft Fabric)
+# ===========================
+MSSQL_JOBS = {
     "system_antipeaks": {
         "sql": system_antipeaks,
         "postprocess": lambda df: process_system_antipeaks(df, today),
@@ -29,19 +32,25 @@ JOBS = {
     "antipeaks": {
         "sql": antipeaks,
         "output": f"{BASE_PATH}\\antipeaks.xlsx",
-        "sheet": "antipeaks"   # ⚠️ pivot на другом листе — не трогаем
+        "sheet": "antipeaks"   # pivot на другом листе — не трогаем
+    }
+}
+
+# ===========================
+# POSTGRESQL JOBS (DBD Reports)
+# Run AFTER all SQL Server jobs
+# ===========================
+PG_JOBS = {
+    "dbd_total": {
+        "sql": dbd_total,
+        "output": f"{BASE_PATH}\\dbd.xlsx",
+        "sheet": "total"
     },
 
     "dbd_reg": {
         "sql": dbd_reg,
         "output": f"{BASE_PATH}\\dbd.xlsx",
         "sheet": "reg"
-    },
-
-    "dbd_total": {
-        "sql": dbd_total,
-        "output": f"{BASE_PATH}\\dbd.xlsx",
-        "sheet": "total"
     }
 }
 
